@@ -6,54 +6,46 @@
       <div class="col-md-4"></div>
       <div class="col-md-4">
         <div class="form-group">
-          <h3>Registration</h3>
+          <h3>Add Item</h3>
         </div>
         <div class="form-group">
           <input
-            v-model="user_data.first_name"
+            v-model="item_data.item_name"
             type="text"
             class="form-control"
-            placeholder="First Name"
+            placeholder="Item Name"
           />
         </div>
         <div class="form-group">
           <input
-            v-model="user_data.last_name"
+            v-model="item_data.item_no"
             type="text"
             class="form-control"
-            placeholder="Last Name"
+            placeholder="Item Number"
           />
         </div>
         <div class="form-group">
           <input
-            v-model="user_data.email"
+            v-model="item_data.item_desc"
+            type="text"
+            class="form-control"
+            placeholder="Item Description"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            v-model="item_data.item_price"
             type="email"
             class="form-control"
-            placeholder="Email"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            v-model="user_data.username"
-            type="text"
-            class="form-control"
-            placeholder="Username"
-          />
-        </div>
-        <div class="form-group">
-          <input
-            v-model="user_data.password"
-            type="password"
-            class="form-control"
-            placeholder="Password"
+            placeholder="Item Price"
           />
         </div>
         <div class="form-group justify-content-center">
           <input
             type="submit"
             class="btn btn-info mx-auto d-block"
-            value="Registration"
-            @click="registration"
+            value="Add Item"
+            @click="add_item"
           />
         </div>
       </div>
@@ -65,18 +57,17 @@
 <script>
 import Header from "../components/Header.vue";
 import ProfileHeader from "@/components/ProfileHeader";
-import RegistrationDataService from "../services/RegistrationDataService";
+import AddItemService from "../services/AddItemService";
 
 export default {
   name: "add-user",
   data() {
     return {
-      user_data: {
-        first_name: "",
-        last_name: "",
-        email: "",
-        username: "",
-        password: null
+      item_data: {
+        item_name: "",
+        item_no: "",
+        item_desc: "",
+        item_price: ""
       },
       submitted: false
     };
@@ -93,21 +84,20 @@ export default {
     }
   },
   methods: {
-    registration() {
+    add_item() {
       var data = {
-        first_name: this.user_data.first_name,
-        last_name: this.user_data.last_name,
-        email: this.user_data.email,
-        username: this.user_data.username,
-        password: this.user_data.password
+        item_name: this.item_data.item_name,
+        item_no: this.item_data.item_no,
+        item_desc: this.item_data.item_desc,
+        item_price: this.item_data.item_price
       };
 
-      RegistrationDataService.create(data).then(response => {
+      AddItemService.create(data).then(response => {
         if (response.data["error"]) {
           this.$toast.error(response.data["error"]);
         } else {
           this.user_data = {};
-          this.$toast.success("User Created");
+          this.$toast.success("Item Created");
         }
       });
     }

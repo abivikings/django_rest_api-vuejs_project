@@ -1,5 +1,6 @@
 <template>
   <div>
+    <component :is="this.headerFooter.header"></component>
     <br /><br />
     <div class="row">
       <div class="col-md-4"></div>
@@ -38,10 +39,34 @@
 </template>
 
 <script>
+import Header from "../components/Header.vue";
+import ProfileHeader from "@/components/ProfileHeader";
 import LoginDataService from "../services/LoginDataService";
 
 export default {
   name: "login",
+  components: {
+    Header,
+    ProfileHeader
+  },
+  created() {
+    if (this.$cookies.get("jwt_token")) {
+      this.$router.push("/profile");
+    } else {
+      this.$router.push("/login");
+    }
+  },
+  computed: {
+    headerFooter() {
+      return this.$cookies.get("jwt_token")
+        ? {
+            header: ProfileHeader
+          }
+        : {
+            header: Header
+          };
+    }
+  },
   data() {
     return {
       user_data: {
@@ -62,6 +87,7 @@ export default {
         if (response.data["error"]) {
           this.$toast.error(response.data["error"]);
         } else {
+          this.$cookies.set("jwt_token", response.data["access_token"]);
           this.$router.push("/profile");
         }
       });
