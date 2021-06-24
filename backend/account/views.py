@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status, views
 from .utils import generate_access_token, generate_refresh_token
+from .models import Item
 
 
 @api_view(['GET', 'POST'])
@@ -69,3 +70,19 @@ def login(request):
 @api_view(['GET', 'POST'])
 def profile(request):
     return JsonResponse({'data': "Hello Profile "})
+
+
+@api_view(['GET', 'POST'])
+def add_item(request):
+    if request.method == 'POST':
+        try:
+            Item.objects.create(item_name=request.data['item_name'],
+                                item_no=request.data['item_no'],
+                                item_desc=request.data['item_desc'],
+                                item_price=request.data['item_price'])
+            return Response(request.data, status=status.HTTP_200_OK)
+        except IntegrityError as e:
+            if e.args[0]:
+                return JsonResponse({"error": "Item Number already exist!!"})
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
